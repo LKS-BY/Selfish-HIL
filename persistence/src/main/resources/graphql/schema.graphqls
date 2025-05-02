@@ -1,0 +1,41 @@
+type Person {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  associatedIdeas: [Idea!]!
+}
+
+type Idea {
+  id: ID!
+  name: String!
+  description: String
+  authors: [Person!]!
+  contradicts: [Idea!]!
+  contradictedBy: [Idea!]!
+}
+
+# ---------------------- Queries ----------------------
+type Query {
+  idea(id: ID!): Idea
+  ideas: [Idea!]!
+  person(id: ID!): Person
+  people: [Person!]!
+}
+
+# -------------------- Mutations ----------------------
+input CreateIdeaInput   { name: String!, description: String, yearAssociated: String }
+input UpdateIdeaInput   { id: ID!, name: String, description: String, yearAssociated: String }
+input CreatePersonInput { firstName: String!, lastName: String! }
+
+type Mutation {
+  createIdea(input: CreateIdeaInput!): Idea!
+  updateIdea(input: UpdateIdeaInput!): Idea!
+  deleteIdea(id: ID!): Boolean!
+
+  createPerson(input: CreatePersonInput!): Person!
+
+  addAuthorToIdea(ideaId: ID!, personId: ID!): Idea!
+
+  addContradiction(ideaId: ID!, contradictingIdeaId: ID!): Idea!
+  removeContradiction(ideaId: ID!, contradictingIdeaId: ID!): Idea!
+}
