@@ -3,15 +3,12 @@ package com.example.selfish.persistence.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.management.relation.RelationType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.selfish.persistence.entities.Person;
 import com.example.selfish.persistence.entities.Idea;
+import com.example.selfish.persistence.entities.Person;
 import com.example.selfish.persistence.repos.IdeaRepository;
 import com.example.selfish.persistence.repos.PersonRepository;
 
@@ -75,24 +72,27 @@ public class IdeaService  {
         return null;
     }
 
-    public Idea addAuthor(long ideaId, long personId) {
-        var idea   = ideas.findById(ideaId)
-                          .orElseThrow(() -> new EntityNotFoundException("idea"));
-        var person = people.findById(personId)
-                           .orElseThrow(() -> new EntityNotFoundException("person"));
-        idea.getAuthors().add(person);
-        person.getIdeas().add(idea);
-        return idea;
+    public void deleteById(long id) {
+        ideas.deleteById(id);
     }
 
+
     /* declare that two ideas contradict each other */
-    public Idea addContradiction(long aId, long bId) {
+    public void addContradiction(long aId, long bId) {
         if (aId == bId) throw new IllegalArgumentException("An idea cannot contradict itself");
         var a = ideas.findById(aId).orElseThrow();
         var b = ideas.findById(bId).orElseThrow();
-        a.getContradicts().add(b);   // A -> B
-        b.getContradicts().add(a);   // B -> A (symmetry)
-        return a;
+        addContradiction(a, b); // A -> B
+    }
+
+    public void addContradiction(Idea idea, Idea contradiction) {
+        Set<Idea> contradictions = idea.getContradicts();
+        Set<Idea> contradictionsInv = contradiction.getContradicts();
+        if (contradictions.contains(contradiction)  // A -> B already exists
+            || contradictionsInv.contains(idea)) // B -> A already exists
+            return; // do nothing
+        contradictions.add(contradiction);
+        contradictionsInv.add(idea);
     }
 
     public void removeContradiction(long aId, long bId) {
@@ -102,16 +102,36 @@ public class IdeaService  {
         b.getContradicts().remove(a); // B -/-> A (symmetry)
     }
 
-  public Set<Idea> listContradictions(long ideaId) {
-      return findById(ideaId).getContradicts();
-  }
+    public Set<Idea> listContradictions(long ideaId) {
+        return findById(ideaId).getContradicts();
+    }
 
-  public void addAuthors(Idea idea, Set<Person> authors) {
-      idea.getAuthors().addAll(authors);
-  }
+    public Idea addAuthor(long ideaId, long personId) {
+        var idea   = ideas.findById(ideaId)
+                        .orElseThrow(() -> new EntityNotFoundException("idea"));
+        var person = people.findById(personId)
+                        .orElseThrow(() -> new EntityNotFoundException("person"));
+        idea.getAuthors().add(person);
+        person.getIdeas().add(idea);
+        return idea;
+    }
+
+    public void addAuthor(Idea idea, Person author) {
+        idea.getAuthors().add(author);
+    }
+
+    public void addAuthors(Idea idea, Set<Person> authors) {
+        idea.getAuthors().addAll(authors);
+    }
+
+    public void removeAuthor(Idea idea, Person author) {
+        idea.getAuthors().remove(author);
+    }
+
+    /* remove all authors from the idea */
   public void removeAuthors(Idea idea, Set<Person> authors) {
       idea.getAuthors().removeAll(authors);
-  }
+    }
 
     public List<Idea> findByDescriptionContaining(String keyword) {
         return ideas.findByDescriptionContaining(keyword);
@@ -125,8 +145,5 @@ public class IdeaService  {
         return ideas.findAllByAuthorsIn(authors);
     }
 
-    public void addContradiction(Idea idea, Idea contradiction) {
-        idea.getContradicts().add(contradiction);
-        contradiction.getContradicts().add(idea);
-    }
+
 }

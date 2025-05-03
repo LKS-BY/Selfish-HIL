@@ -6,14 +6,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.example.selfish.persistence.PersistenceApplication;
 import com.example.selfish.persistence.entities.Person;
-import com.example.selfish.persistence.entities.Idea;
 import com.example.selfish.persistence.repos.PersonRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class PersonService {
@@ -31,8 +30,13 @@ public class PersonService {
         return personRepository.findAll();
     }
 
-    public Optional<Person> findById(long id) {
-        return personRepository.findById(id);
+    public Person findById(long id) {
+        Optional<Person> person = personRepository.findById(id);
+        if (person.isPresent()) {
+            return person.get();
+        } else {
+            throw new EntityNotFoundException("Person not found with id: " + id);
+        }
     }
 
     public void clear() {

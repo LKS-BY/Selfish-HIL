@@ -1,21 +1,18 @@
 package com.example.selfish.persistence;
 
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import com.example.selfish.persistence.services.IdeaService;
 import com.example.selfish.persistence.services.PersonService;
 
-@Component
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+// @Component
 @RequiredArgsConstructor
 public class BootstrapData implements CommandLineRunner {
     @Autowired
@@ -29,7 +26,7 @@ public class BootstrapData implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
         /* Create people */
-        // personService.clear();
+        people.clear();
         ideas.findAll().forEach(
             idea -> log.info("Found idea: " + idea.getName() + " authors: " +
                 idea.getAuthors().stream().map(p -> p.getFirstName() + " " + p.getLastName()).collect(Collectors.joining(", ")) +
@@ -37,7 +34,7 @@ public class BootstrapData implements CommandLineRunner {
         );
         ideas.clear();
         
-
+/* 
 
         var drmike = people.create("Dr. Mike;Israetel");
         var karpathy = people.create("Dr. Andrei;Karpathy");
@@ -62,7 +59,7 @@ public class BootstrapData implements CommandLineRunner {
         ideas.addAuthors(agiMayKillUs, Set.of(jdfm, camus));
 
         // create contradictions 
-        ideas.addContradiction(agiWillbeBenevolent, agiMayKillUs);
+        ideas.addContradiction2(agiWillbeBenevolent, agiMayKillUs); */
     }
  
 }
