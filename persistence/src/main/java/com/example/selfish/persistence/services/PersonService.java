@@ -39,7 +39,7 @@ public class PersonService {
         }
     }
 
-    public void clear() {
+    public void deleteAll() {
         personRepository.deleteAll();
     }
     public Person update(Person person) {

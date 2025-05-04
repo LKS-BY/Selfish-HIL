@@ -3,6 +3,8 @@ package com.example.selfish.persistence.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +28,7 @@ public class Person {
   private String lastName;
 
   @ManyToMany(mappedBy = "authors")
+  @JsonBackReference
   private Set<Idea> ideas = new HashSet<>();
 
   public Person(String firstName, String lastName) {

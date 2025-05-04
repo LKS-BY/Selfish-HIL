@@ -1,9 +1,12 @@
 package com.example.selfish.persistence;
 
 import java.util.List;
+import java.util.Set;
 
-import org.hibernate.dialect.PostgresPlusDialect;
 import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -106,7 +109,7 @@ class IdeaServiceTest {
     ideas.create(title2, description2);
 
     // ACT
-    ideas.clear();
+    ideas.deleteAll();
 
     // ASSERT
     List<Idea> allIdeas = ideas.findAll();
@@ -141,11 +144,11 @@ class IdeaServiceTest {
     Assertions.assertEquals(title1, allIdeas.get(0).getName());
 
     Person author3 = people.findById(author1.getId());
-    Assertions.assertNotNull(author3);
-    Assertions.assertEquals(author1.getId(), author3.getId());
+    assertNotNull(author3, "Expected author to be found by ID.");
+    assertEquals(author1.getId(), author3.getId(), "Expected author to be found by ID.");
     Set<Idea> allIdeas2 = author3.getIdeas();
-    Assertions.assertEquals(2, allIdeas2.size());
-    Assertions.assertContains(idea1.getId(), allIdeas2.get(0).getId());
+    assertEquals(2, allIdeas2.size(), "Expected author to have 2 ideas.");
+    assertTrue(allIdeas2.stream().anyMatch(i -> i.getId().equals(idea1.getId())), "Expected idea1 to be in the author's ideas.");
 
 
   }
@@ -155,7 +158,7 @@ class IdeaServiceTest {
   void symmetricContradictionIsCreated() {
     
     List<Idea> ids = ideas.findAll();
-    ideas.clear();
+    ideas.deleteAll();
 
 
     // ARRANGE

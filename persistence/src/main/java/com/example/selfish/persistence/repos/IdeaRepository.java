@@ -11,7 +11,7 @@ import com.example.selfish.persistence.entities.Person;
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
     // Custom query methods can be defined here if needed
     // For example:
-    List<Idea> findByName(String name);
+    Optional<Idea> findByName(String name);
     Optional<Idea> findById(long id); // Find an idea by its ID
     List<Idea> findByDescriptionContaining(String keyword); // Find ideas by a keyword in the description
     List<Idea> findAllByAuthorsId(long authorId); // Find all ideas by a specific author's ID

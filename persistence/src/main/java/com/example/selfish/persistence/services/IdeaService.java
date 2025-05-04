@@ -32,7 +32,7 @@ public class IdeaService  {
         return ideas.findAllByAuthorsId(authorId);
     }
 
-    public void clear() {
+    public void deleteAll() {
         ideas.deleteAll();
     }
 
@@ -51,6 +51,9 @@ public class IdeaService  {
                                      "%" + keyword.toLowerCase() + "%"), page);
     } */
     public Idea create(String name, String description) {
+        if (name == null || name.isBlank()) throw new IllegalArgumentException("Name cannot be null or empty");
+        if (description == null || description.isBlank()) throw new IllegalArgumentException("Description cannot be null or empty");
+        if (ideas.findByName(name).isPresent()) throw new IllegalArgumentException("Idea with name " + name + " already exists");
         Idea idea = new Idea(name, description);
         return ideas.save(idea);
     }
@@ -137,8 +140,11 @@ public class IdeaService  {
         return ideas.findByDescriptionContaining(keyword);
     }
 
-    public List<Idea> findByName(String name) {
-        return ideas.findByName(name);
+    public Idea findByName(String name) {
+        Optional<Idea> result = ideas.findByName(name);
+        if (result.isPresent())
+            return result.get();
+        return null;
     }
 
     public List<Idea> findAllByAuthorsIn(List<Person> authors) {

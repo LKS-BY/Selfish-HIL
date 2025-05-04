@@ -2,6 +2,9 @@ package com.example.selfish.persistence.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +36,7 @@ public class Idea {
         joinColumns = @JoinColumn(name = "idea_id"),
         inverseJoinColumns = @JoinColumn(name = "person_id"))
     @ManyToMany
+    @JsonManagedReference
     private Set<Person> authors = new HashSet<>();
 
     public Idea(String name, String description ) {
@@ -42,6 +46,7 @@ public class Idea {
 
         /* --- contradictions -------------------------------------------------- */
         @ManyToMany
+        @JsonBackReference
         @JoinTable(name = "idea_contradictions",
                    joinColumns        = @JoinColumn(name = "idea_id"),
                    inverseJoinColumns = @JoinColumn(name = "contradicts_id"))

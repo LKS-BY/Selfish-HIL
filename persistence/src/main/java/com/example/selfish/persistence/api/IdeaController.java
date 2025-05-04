@@ -1,5 +1,6 @@
 package com.example.selfish.persistence.api;
 
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class IdeaController {
                .created(u.path("/api/ideas/{id}").build(saved.getId()))
                .body(saved);
     }
+
+    @GetMapping("/all")
+    public List<Idea> listAll() { return ideas.findAll(); }
 
     @GetMapping("/{id}")
     public Idea get(@PathVariable long id) { return ideas.findById(id); }
