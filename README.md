@@ -41,3 +41,41 @@ docker compose up -d  (mysql / neo4j / )       # ⇒ MySQL @ 3306, Postgres @ 54
 cd ui
 npm install
 ng serve                      # http://localhost:4200
+
+#end bash 
+
+```
+
+# 🗂️ Repo layout
+
+.
+├── api/                # Java Spring Boot source
+│   ├── src/main/java
+│   └── src/test/java
+├── ui/                 # Angular 17 app
+│   ├── src/app
+│   └── src/environments
+├── worker/             # Python FastAPI (LLM extraction micro-service)
+│   └── tests/
+├── docker-compose.yml
+└── docs/               # architecture diagrams, ADRs, etc.
+
+
+# ⚙️ Configuration
+File	What it does
+docker-compose.yml	Defines DBs & admin UIs (MySQL, pgAdmin+Postgres, Neo4j Browser).
+api/src/main/resources/application-*.yml	Separate Spring profiles (mysql, postgres, neo4j).
+ui/src/environments/*.ts	Point the Angular proxy at the correct API port.
+🛣 Roadmap
+
+Role-based auth (Keycloak or Spring Security + OAuth2).
+
+WebSockets – push live LLM updates into the reviewer’s screen.
+
+GraphQL gateway, federating SQL + Neo4j transparently.
+
+Vector-search playground (PGVector, Neo4j Vector Index, etc.).
+
+CI/CD GitHub Actions deploying preview environments with Docker Compose-CI.
+
+Documentation site (Docusaurus) fed from /docs.
