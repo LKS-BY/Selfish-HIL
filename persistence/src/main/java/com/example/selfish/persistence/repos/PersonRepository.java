@@ -10,6 +10,8 @@ import com.example.selfish.persistence.entities.Person;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
   List<Person> findByLastName(String lastName);
+  
+  List<Person> findByFirstName(String firstName);
 
   Optional<Person> findById(long id);
 

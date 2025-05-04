@@ -1,5 +1,6 @@
 package com.example.selfish.persistence.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,5 +72,37 @@ public class PersonService {
         }
         return create(names[0], names[1]);
 
+    }
+
+    public Person findByName(String firstName, String lastName) {
+        List<Person> persons = personRepository.findByLastName(lastName);
+        List<Person> matches = new ArrayList<>();
+        for (Person person : persons) {
+            if (person.getFirstName().equalsIgnoreCase(firstName)) {
+                matches.add(person);
+            }
+        }
+
+        if (!matches.isEmpty() && matches.size() == 1) {
+            return matches.get(0); // return the first match
+        }
+        else if (matches.size() > 1) {
+            log.warn("Multiple persons found with the same name: " + firstName + " " + lastName);
+        }
+        return null; // or throw an exception if not found
+    }
+    public Person findByLastName(String lastName) {
+        List<Person> persons = personRepository.findByLastName(lastName);
+        if (persons.isEmpty()) {
+            return null; // or throw an exception if not found
+        }
+        return persons.get(0); // return the first person with the last name
+    }
+    public Person findByFirstName(String firstName) {
+        List<Person> persons = personRepository.findByFirstName(firstName);
+        if (persons.isEmpty()) {
+            return null; // or throw an exception if not found
+        }
+        return persons.get(0); // return the first person with the first name
     }
 }
