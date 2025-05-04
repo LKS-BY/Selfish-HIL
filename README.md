@@ -27,7 +27,7 @@ _A full-stack playground for experimenting with LLM-extracted knowledge, manual 
 
 ```bash
 # 1. Clone
-git clone https://github.com/lks-by/selfish-hil
+git clone https://github.com/LKS-BY/Selfish-HIL.git
 cd hitl-review
 
 For Development
